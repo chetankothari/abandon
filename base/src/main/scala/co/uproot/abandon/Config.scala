@@ -8,6 +8,9 @@ import org.rogach.scallop.ScallopConf
 import SettingsHelper._
 import com.typesafe.config.ConfigException
 
+/** Contains all the command line configurations and options
+  *
+  */
 class AbandonCLIConf(arguments: Seq[String]) extends ScallopConf(arguments) {
   val inputs = opt[List[String]]("input", short = 'i')
   val reports = opt[List[String]]("report", short = 'r')
@@ -27,6 +30,15 @@ object SettingsHelper {
     }
   }
 
+  /** Generates the configuration settings provided via the command line arguments.
+    * Either from the configuration file or the options given as arguments.
+    * It will check for a file if it exists then the configuration from the file is parsed and
+    * returned else it will check for other configuration options and generate appropriate
+    * options if passed else return the predefined settings.
+    *
+    * @param args
+    * @return either the configurations from a file or the command line options if a file was not provided
+    */
   def getCompleteSettings(args: Seq[String]) = {
     val cliConf = new AbandonCLIConf(args)
     val configOpt = cliConf.config.get
@@ -52,6 +64,12 @@ object SettingsHelper {
     }
   }
 
+  /** Generates the configuration options for the file given as command line arguments.
+    * If the file was not found an error message.
+    *
+    * @param configFileName File name provided as command line argument
+    * @return settings provided extracted form the file given as input else error message.
+    */
   def makeSettings(configFileName: String) = {
     val file = new java.io.File(configFileName)
     if (file.exists) {
